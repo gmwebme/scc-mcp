@@ -25,6 +25,36 @@ Out of the box, Claude Code answers questions like "who calls `processOrder`?" b
 | No idea what changed since last conversation | `⚠ STALE — 7 files changed` banner |
 | Read 50 files to estimate complexity | Boyter-`scc` hotspots, top-5 in-banner |
 
+## Real-world benchmarks
+
+Run on real, indexed projects. Five structural queries per stack — `grep`'s output is the upper bound on tokens an agent would read if it did naive search; CBM's output is exact, structural, and tiny.
+
+**Next.js project** (~59k `.ts`/`.tsx` files):
+
+| Query | Raw grep tokens | CBM tokens | Reduction |
+|-------|----------------:|-----------:|----------:|
+| api-routes | 228,620 | 6 | 100.0% |
+| data-fetching | 351,845 | 5 | 100.0% |
+| high-fanout | 3,004,289 | 71 | 100.0% |
+| **Total (matched queries)** | **3,584,754** | **82** | **~100%** |
+
+**Mixed Go/Python monorepo** (~19k source files):
+
+| Query | Raw grep tokens | CBM tokens | Reduction |
+|-------|----------------:|-----------:|----------:|
+| all-handlers | 248,971 | 71 | 100.0% |
+| all-routes | 30,719 | 71 | 99.8% |
+| http-edges | 1,220 | 5 | 99.6% |
+| dead-code | 204,281 | 71 | 100.0% |
+| high-fanout | 3,407,565 | 71 | 100.0% |
+| **Total** | **3,892,756** | **289** | **~100%** |
+
+Reproduce on your repo:
+```bash
+codebase-memory-mcp cli index_repository '{"repo_path":"/path/to/repo"}'
+bash scripts/benchmark.sh --md /path/to/repo
+```
+
 ## Install
 
 1. **Install [codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp)** (required):
