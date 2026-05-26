@@ -1,0 +1,10 @@
+.DS_Store
+*.swp
+*.swo
+tests/__pycache__/
+.scc/metrics.json
+.scc/.map-meta.json
+.scc/.cache/
+node_modules/
+.env
+.env.local
